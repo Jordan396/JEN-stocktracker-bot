@@ -1,8 +1,8 @@
 from Controllers.dbhelper import DBHelper
-from dateutil.parser import parse
 from datetime import datetime, timedelta
 import Controllers.alphavmethods as alphavmethods
-import requests 
+import requests
+import copy 
 
 db = DBHelper()
 
@@ -52,7 +52,8 @@ class botmethods:
     def extractKeyStockInformation(self, stockSymbol, stockExchange, companyName):
         message = None
         Dates, Prices = alphavmethods.getFullPriceHistory(stockSymbol, stockExchange, self.ALPHA_VANTAGE_SECRET_KEY)
-        highSensitivityThreshold, medSensitivityThreshold, lowSensitivityThreshold = alphavmethods.calculateSensitivityTriggerRates(Prices)
+        closingPrices = copy.deepcopy(Prices)
+        highSensitivityThreshold, medSensitivityThreshold, lowSensitivityThreshold = alphavmethods.calculateSensitivityTriggerRates(closingPrices)
         message = ("<b>{} Report</b>\n\n"+
             "The current price of the stock is <i>${}</i>.\n\n"+
             "Based on my calculations, I present the following thresholds:\n"+

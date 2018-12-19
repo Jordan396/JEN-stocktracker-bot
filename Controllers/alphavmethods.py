@@ -1,24 +1,36 @@
 import json
 import requests
 import numpy as np
-import copy
+import datetime
 
 def getFullPriceHistory(stockSymbol, stockExchange, ALPHA_VANTAGE_SECRET_KEY):
 	response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={}:{}&outputsize=full&apikey={}".format(stockExchange, stockSymbol, ALPHA_VANTAGE_SECRET_KEY))
 	data = response.json()
-	Dates, aClose = [],[]
-	for key, value in data['Time Series (Daily)'].items():
-		Dates.append(key)	
-		aClose.append(float(value['5. adjusted close']))
+	timestamps, aClose = [],[]
+
+	for key in data['Time Series (Daily)']:
+		timestamps.append(key)
+	dates = [datetime.datetime.strptime(ts, "%Y-%m-%d") for ts in timestamps]
+	dates.sort()
+	dates.reverse()
+	Dates = [datetime.datetime.strftime(ts, "%Y-%m-%d") for ts in dates]
+	for date in Dates:
+		aClose.append(float(data['Time Series (Daily)'][date]['5. adjusted close']))
 	return (Dates, aClose)
 
 def getCompactPriceHistory(stockSymbol, stockExchange, ALPHA_VANTAGE_SECRET_KEY):
 	response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={}:{}&apikey={}".format(stockExchange, stockSymbol, ALPHA_VANTAGE_SECRET_KEY))
 	data = response.json()
-	Dates, aClose = [],[]
-	for key, value in data['Time Series (Daily)'].items():
-		Dates.append(key)	
-		aClose.append(float(value['5. adjusted close']))
+	timestamps, aClose = [],[]
+
+	for key in data['Time Series (Daily)']:
+		timestamps.append(key)
+	dates = [datetime.datetime.strptime(ts, "%Y-%m-%d") for ts in timestamps]
+	dates.sort()
+	dates.reverse()
+	Dates = [datetime.datetime.strftime(ts, "%Y-%m-%d") for ts in dates]
+	for date in Dates:
+		aClose.append(float(data['Time Series (Daily)'][date]['5. adjusted close']))
 	return (Dates, aClose)
 
 def calculateLatestThreeDayMA(closingPrices):
@@ -44,9 +56,8 @@ def createThreeFifteenPercentChangesList(closingPrices):
 		del closingPrices[0]
 	return percentageChangesList
 
-def calculateSensitivityTriggerRates(Prices):
+def calculateSensitivityTriggerRates(closingPrices):
 	'''
-	ADD DOCUMENTATION
 	# Assuming normal distribution
 	High: ~6 triggers per month (6/30 -> 20%) --> z-score = -0.8416212335
 	Medium: ~3 triggers per month (3/30 -> 10%) --> z-score = -1.281551567
@@ -55,7 +66,6 @@ def calculateSensitivityTriggerRates(Prices):
 	z-score = ((threshold - mean)/std)
 	threshold = (z-score * std) + mean
 	'''
-	closingPrices = copy.deepcopy(Prices)
 	latestThreeYearsClosingPrices = closingPrices[:1200]
 	percentageChangesList = createThreeFifteenPercentChangesList(closingPrices)
 	mean = np.mean(percentageChangesList)

@@ -1,7 +1,6 @@
 import config
 import sqlite3
 import datetime
-import boto3
 import requests
 
 from Controllers.dbhelper import DBHelper
@@ -38,8 +37,7 @@ def checkIfPercentageChangesUpdated(currentDate):
 		return True
 
 def main():
-	# TODO: Remove day subtraction prior to deployment
-	currentDate = str((datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%Y-%m-%d"))
+	currentDate = str(datetime.datetime.now().strftime("%Y-%m-%d"))
 	print(currentDate)
 	listOfStocks = retrieveAllDistinctStocks()
 	isPercentageChangeUpdated = checkIfPercentageChangesUpdated(currentDate)

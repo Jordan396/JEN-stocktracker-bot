@@ -1,4 +1,4 @@
-import time, logging, emoji, pytz, threading
+import time, logging, emoji, threading
 import datetime
 
 import config
@@ -47,7 +47,7 @@ def start(bot, update):
     	userExists = bots.checkIfUserExists(update.message.chat.username)
     	if userExists:
     		update.message.reply_text("Welcome back "+ update.message.chat.first_name + "!\n\n" +
-    			"<b>Commands:</b>\n"+
+    			"<b>Available Commands:</b>\n"+
     			"/help : Displays information guide.\n"+
     			"/seeya : Closes JEN. You will continue to receive notifications (if triggered).\n"+
     			"/exit : Clears your data. You will no longer receive notifications.\n", reply_markup=markup_one, parse_mode='HTML')
@@ -56,8 +56,8 @@ def start(bot, update):
     		message = ("Hello " + update.message.chat.first_name + "!\n\nMy name's <b>JEN</b>. My purpose is to keep track of stock prices and notify you when great buying opportunities come by!\n\n" +
     			"To use me, simply look up the stocks you want to track and pick one of my suggested 3/15MA thresholds. When price changes fall below this threshold, I'll send you a notification! \n\n" +
     			"If you're wondering what's a <i>3/15MA</i>, you can find a detailed explanation on my creator's GitHub page: https://github.com/Jordan396/JEN-quantitative-analysis-bot\n\n" +
-    			"Although I try my best, you should know that I'm only a bot after all... so, always rely on your own discretion before taking any action. \n\n"+
-    			"<b>Commands:</b>\n"+
+    			"Although I try my best, you should know that I'm only a bot after all... you should always rely on your own discretion before taking any action.\n\n"+
+    			"<b>Available Commands:</b>\n"+
     			"/help : Displays information guide.\n"+
     			"/seeya : Closes JEN. You will continue to receive notifications (if triggered).\n"+
     			"/exit : Clears all your data. You will no longer receive notifications.\n")
@@ -95,19 +95,19 @@ def addTickerVerification(bot, update, user_data):
 		text = update.message.text
 		if (text == "Yes, that's the one!"):
 			update.message.reply_text("Awesome! Give me a moment while I analyze this stock...")
-			try:
-				message, currentPrice, highSensitivityThreshold, medSensitivityThreshold, lowSensitivityThreshold = bots.extractKeyStockInformation(user_data['stockSymbol'], user_data['stockExchange'], user_data['companyName'])
-				user_data['highSensitivityThreshold'] = highSensitivityThreshold
-				user_data['medSensitivityThreshold'] = medSensitivityThreshold
-				user_data['lowSensitivityThreshold'] = lowSensitivityThreshold
-				update.message.reply_text(message, parse_mode='HTML')
-				update.message.reply_text("Please select a 3/15MA threshold. When prices changes exceed this threshold, I'll send you a notification!", reply_markup=markup_three)
-				return ADDTICKERTRIGGER
-			except:
-				update.message.reply_text("Sorry, an unexpected error has occurred! I'll notify my creator and he'll handle it.")
-				update.message.reply_text("What would you like to do now?", reply_markup=markup_one)
-				user_data.clear()
-				return MENU
+			# try:
+			message, currentPrice, highSensitivityThreshold, medSensitivityThreshold, lowSensitivityThreshold = bots.extractKeyStockInformation(user_data['stockSymbol'], user_data['stockExchange'], user_data['companyName'])
+			user_data['highSensitivityThreshold'] = highSensitivityThreshold
+			user_data['medSensitivityThreshold'] = medSensitivityThreshold
+			user_data['lowSensitivityThreshold'] = lowSensitivityThreshold
+			update.message.reply_text(message, parse_mode='HTML')
+			update.message.reply_text("Please select a 3/15MA threshold. When prices changes exceed this threshold, I'll send you a notification!", reply_markup=markup_three)
+			return ADDTICKERTRIGGER
+			# except:
+			# 	update.message.reply_text("Sorry, an unexpected error has occurred! I'll notify my creator and he'll handle it.")
+			# 	update.message.reply_text("What would you like to do now?", reply_markup=markup_one)
+			# 	user_data.clear()
+			# 	return MENU
 		else:
 			update.message.reply_text("Sorry, I can't find any other company with that ticker symbol.")
 			update.message.reply_text("What would you like to do now?", reply_markup=markup_one)
@@ -222,8 +222,7 @@ def main():
 	updater = Updater(token=TOKEN)
 	jobQueue = updater.job_queue
 	dispatcher = updater.dispatcher
-	# 86400 DEPLOYMENT_DATETIME
-	job_minute = jobQueue.run_repeating(notifyUsersIfThresholdExceeded, interval=60, first=10)
+	job_minute = jobQueue.run_repeating(notifyUsersIfThresholdExceeded, interval=86400, first=DEPLOYMENT_DATETIME)
 
 	conv_handler = ConversationHandler( # Handles different commands, states. 
         entry_points=[CommandHandler('start', start)],
