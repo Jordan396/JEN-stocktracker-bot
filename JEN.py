@@ -55,7 +55,7 @@ def start(bot, update):
     	else:
     		message = ("Hello " + update.message.chat.first_name + "!\n\nMy name's <b>JEN</b>. My purpose is to keep track of stock prices and notify you when great buying opportunities come by!\n\n" +
     			"To use me, simply look up the stocks you want to track and pick one of my suggested 3/15MA thresholds. When price changes fall below this threshold, I'll send you a notification! \n\n" +
-    			"If you're wondering what's a <i>3/15MA</i>, you can find a detailed explanation on my creator's GitHub page: https://github.com/Jordan396/JEN-quantitative-analysis-bot\n\n" +
+    			"If you're wondering what's a <i>3/15MA</i>, you can find a detailed explanation on my creator's GitHub page: https://github.com/Jordan396/JEN-stocktracker-bot\n\n" +
     			"Although I try my best, you should know that I'm only a bot after all... you should always rely on your own discretion before taking any action.\n\n"+
     			"<b>Available Commands:</b>\n"+
     			"/help : Displays information guide.\n"+
@@ -210,7 +210,7 @@ def seeya(bot, update, user_data):
 
 def instructions(bot, update, user_data):
     update.message.reply_text("To use me, simply look up the stocks you want to track and pick one of my suggested 3/15MA thresholds. When price changes fall below this threshold, I'll send you a notification! \n\n" +
-    						  "If you're wondering what's a <i>3/15MA</i>, you can find a detailed explanation on my creator's GitHub page: https://github.com/Jordan396/JEN-quantitative-analysis-bot\n\n", reply_markup=markup_one, parse_mode='HTML')
+    						  "If you're wondering what's a <i>3/15MA</i>, you can find a detailed explanation on my creator's GitHub page: https://github.com/Jordan396/JEN-stocktracker-bot\n\n", reply_markup=markup_one, parse_mode='HTML')
     user_data.clear()
     return MENU
 
