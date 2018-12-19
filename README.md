@@ -24,7 +24,7 @@ Currently, _JEN_ only supports stocks traded on the _NYSE_ and _NASDAQ_ as of _1
 
 **To access _JEN_:** 
 
-1. Click on this [link](t.me/stocktracker_JENbot); or 
+1. Click on this [link](https://t.me/stocktracker_JENbot); or 
 2. Search for **@stocktracker_JENbot** on Telegram
 
 ---
