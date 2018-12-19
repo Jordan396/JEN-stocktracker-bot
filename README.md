@@ -16,15 +16,17 @@ _This disclaimer has been adapted from [stockopedia](https://www.stockopedia.com
 
 Stock prices often fall drastically when market participants are pessimistic and desperate to get rid of their stocks. While this is terrible for those in the selling position, it presents _fantastic buying opportunities_ for other investors. However, for [passive investors](https://www.investopedia.com/terms/p/passiveinvesting.asp) like myself who do not monitor stock prices on a daily basis, it is easy to miss out on such opportunities.
 
+---
+
 _JEN_ was created to tackle this issue. Using statistical theory, this **Telegram** bot formulates various _3/15MA_ thresholds for users. At the end of each day, if the latest stock price changes exceed the user's selected threshold, _JEN_ sends a notification. Each threshold corresponds to a sensitivity level and this affects the frequency of notifications.
 
 **Currently, _JEN_ only supports stocks traded on the _NYSE_ and _NASDAQ_ as of _16 December 2018_.** 
 
----
-
 To access _JEN_: 
 1. Click on this [link](t.me/stocktracker_JENbot); or 
 2. Search for **@stocktracker_JENbot** on Telegram
+
+---
 
 ## How does JEN work?
 ### Technical Details
