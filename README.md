@@ -20,9 +20,9 @@ Stock prices often fall drastically when market participants are pessimistic and
 
 _JEN_ was created to tackle this issue. Using statistical theory, this **Telegram** bot formulates various _3/15MA_ thresholds for users. At the end of each day, if the latest stock price changes exceed the user's selected threshold, _JEN_ sends a notification. Each threshold corresponds to a sensitivity level and this affects the frequency of notifications.
 
-**Currently, _JEN_ only supports stocks traded on the _NYSE_ and _NASDAQ_ as of _16 December 2018_.** 
+Currently, _JEN_ only supports stocks traded on the _NYSE_ and _NASDAQ_ as of _16 December 2018_.
 
-To access _JEN_: 
+** To access _JEN_: ** 
 1. Click on this [link](t.me/stocktracker_JENbot); or 
 2. Search for **@stocktracker_JENbot** on Telegram
 
