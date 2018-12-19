@@ -101,7 +101,7 @@ def addTickerVerification(bot, update, user_data):
 			user_data['medSensitivityThreshold'] = medSensitivityThreshold
 			user_data['lowSensitivityThreshold'] = lowSensitivityThreshold
 			update.message.reply_text(message, parse_mode='HTML')
-			update.message.reply_text("Please select a 3/15MA threshold. When prices changes exceed this threshold, I'll send you a notification!", reply_markup=markup_three)
+			update.message.reply_text("Please select a 3/15MA threshold.", reply_markup=markup_three)
 			return ADDTICKERTRIGGER
 			# except:
 			# 	update.message.reply_text("Sorry, an unexpected error has occurred! I'll notify my creator and he'll handle it.")
@@ -141,7 +141,7 @@ def addTickerConfirmation(bot, update, user_data):
 		text = update.message.text
 		if (text == "That'd be great, thanks!"):
 			bots.saveUserStock(update.message.chat.id ,update.message.chat.username, user_data['stockSymbol'], user_data['stockExchange'], user_data['companyName'], user_data['selectedThresholdPercentage'], str(datetime.datetime.now().strftime("%Y-%m-%d")))
-			update.message.reply_text("<b>{}:{}</b> was added successfully! \nWhat would you like to do next?".format(user_data['stockExchange'],user_data['stockSymbol']), reply_markup=markup_one, parse_mode='HTML')
+			update.message.reply_text("<b>{}:{}</b> was added successfully! I'll send you a notification whenever price changes exceed your threshold.\nWhat would you like to do next?".format(user_data['stockExchange'],user_data['stockSymbol']), reply_markup=markup_one, parse_mode='HTML')
 			user_data.clear()
 			return MENU
 		else:
