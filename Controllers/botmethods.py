@@ -56,7 +56,7 @@ class botmethods:
         highSensitivityThreshold, medSensitivityThreshold, lowSensitivityThreshold = alphavmethods.calculateSensitivityTriggerRates(closingPrices)
         message = ("<b>{} Report</b>\n\n"+
             "The current price of the stock is <i>${}</i>.\n\n"+
-            "Based on my calculations, I present the following thresholds:\n"+
+            "Here are the available thresholds:\n"+
             "HIGH (~6 alerts/month): <i>{}%</i>\n"+
             "MEDIUM (~3 alerts/month): <i>{}%</i>\n"+
             "LOW (~1 alert/month): <i>{}%</i>\n\n"+

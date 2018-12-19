@@ -48,10 +48,10 @@ def start(bot, update):
     	if userExists:
     		update.message.reply_text("Welcome back "+ update.message.chat.first_name + "!\n\n" +
     			"<b>Available Commands:</b>\n"+
-          "/start : Activates JEN.\n"+
+    			"/start : Activates JEN.\n"+
     			"/help : Displays information guide.\n"+
-    			"/seeya : Closes JEN. You will continue to receive notifications (if triggered).\n"+
-    			"/exit : Clears your data. You will no longer receive notifications.\n", reply_markup=markup_one, parse_mode='HTML')
+    			"/seeya : Stops JEN temporarily. You will still receive notifications (if triggered).\n"+
+    			"/exit : Stops JEN permanently. You will no longer receive notifications.", reply_markup=markup_one, parse_mode='HTML')
     		return MENU
     	else:
     		message = ("Hello " + update.message.chat.first_name + "!\n\nMy name's <b>JEN</b>. My purpose is to keep track of stock prices and notify you when great buying opportunities come by!\n\n" +
@@ -59,10 +59,10 @@ def start(bot, update):
     			"If you're wondering what's a <i>3/15MA</i>, you can find a detailed explanation on my creator's GitHub page: https://github.com/Jordan396/JEN-stocktracker-bot\n\n" +
     			"Although I try my best, you should know that I'm only a bot after all... you should always rely on your own discretion before taking any action.\n\n"+
     			"<b>Available Commands:</b>\n"+
-          "/start : Activates JEN.\n"+
+    			"/start : Activates JEN.\n"+
     			"/help : Displays information guide.\n"+
-    			"/seeya : Closes JEN. You will continue to receive notifications (if triggered).\n"+
-    			"/exit : Clears all your data. You will no longer receive notifications.\n")
+    			"/seeya : Stops JEN temporarily. You will still receive notifications (if triggered).\n"+
+    			"/exit : Stops JEN permanently. You will no longer receive notifications.")
     		update.message.reply_text(message, reply_markup=markup_one, parse_mode='HTML')
     		bots.saveNewUser(update.message.chat.username)
     		return MENU
@@ -103,7 +103,7 @@ def addTickerVerification(bot, update, user_data):
 			user_data['medSensitivityThreshold'] = medSensitivityThreshold
 			user_data['lowSensitivityThreshold'] = lowSensitivityThreshold
 			update.message.reply_text(message, parse_mode='HTML')
-			update.message.reply_text("Please select a 3/15MA threshold.", reply_markup=markup_three)
+			update.message.reply_text("Please select a <i>3/15MA</i> threshold.", reply_markup=markup_three, parse_mode='HTML')
 			return ADDTICKERTRIGGER
 			# except:
 			# 	update.message.reply_text("Sorry, an unexpected error has occurred! I'll notify my creator and he'll handle it.")
@@ -143,7 +143,8 @@ def addTickerConfirmation(bot, update, user_data):
 		text = update.message.text
 		if (text == "That'd be great, thanks!"):
 			bots.saveUserStock(update.message.chat.id ,update.message.chat.username, user_data['stockSymbol'], user_data['stockExchange'], user_data['companyName'], user_data['selectedThresholdPercentage'], str(datetime.datetime.now().strftime("%Y-%m-%d")))
-			update.message.reply_text("<b>{}:{}</b> was added successfully! I'll send you a notification whenever price changes exceed your threshold.\nWhat would you like to do next?".format(user_data['stockExchange'],user_data['stockSymbol']), reply_markup=markup_one, parse_mode='HTML')
+			update.message.reply_text("<b>{}:{}</b> was added successfully! I'll send you a notification whenever price changes exceed your threshold.".format(user_data['stockExchange'],user_data['stockSymbol']), parse_mode='HTML')
+			update.message.reply_text("What would you like to do next?", reply_markup=markup_one)
 			user_data.clear()
 			return MENU
 		else:
