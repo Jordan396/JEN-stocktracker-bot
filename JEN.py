@@ -48,6 +48,7 @@ def start(bot, update):
     	if userExists:
     		update.message.reply_text("Welcome back "+ update.message.chat.first_name + "!\n\n" +
     			"<b>Available Commands:</b>\n"+
+          "/start : Activates JEN.\n"+
     			"/help : Displays information guide.\n"+
     			"/seeya : Closes JEN. You will continue to receive notifications (if triggered).\n"+
     			"/exit : Clears your data. You will no longer receive notifications.\n", reply_markup=markup_one, parse_mode='HTML')
@@ -58,6 +59,7 @@ def start(bot, update):
     			"If you're wondering what's a <i>3/15MA</i>, you can find a detailed explanation on my creator's GitHub page: https://github.com/Jordan396/JEN-stocktracker-bot\n\n" +
     			"Although I try my best, you should know that I'm only a bot after all... you should always rely on your own discretion before taking any action.\n\n"+
     			"<b>Available Commands:</b>\n"+
+          "/start : Activates JEN.\n"+
     			"/help : Displays information guide.\n"+
     			"/seeya : Closes JEN. You will continue to receive notifications (if triggered).\n"+
     			"/exit : Clears all your data. You will no longer receive notifications.\n")
