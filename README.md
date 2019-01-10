@@ -139,4 +139,4 @@ Detach from the terminal and you're done!
 * Add support for same ticker symbols on different exchanges
 * Implement flexible X/Y moving average thresholds for stocks of different volatilities
 
-If you'd like to contribute to _JEN_, or to improve anything at all really, I'd love to have a chat with you! Please feel free to contact me at [jordan.chyehong@gmail.com](jordan.chyehong@gmail.com).
+If you'd like to contribute to _JEN_, or to improve anything at all really, I'd love to have a chat with you! Please feel free to contact me at [jordan.chyehong@gmail.com](mailto:jordan.chyehong@gmail.com).
