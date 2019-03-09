@@ -1,5 +1,11 @@
 # JEN-stocktracker-bot
 
+[![Project Status: Inactive – The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive)
+[![Project License](https://img.shields.io/github/license/jordan396/JEN-stocktracker-bot.svg)](https://img.shields.io/github/license/jordan396/JEN-stocktracker-bot.svg)
+[![Latest Commit](https://img.shields.io/github/last-commit/jordan396/JEN-stocktracker-bot/master.svg)](https://img.shields.io/github/last-commit/jordan396/JEN-stocktracker-bot/master.svg)
+[![Repo Size](https://img.shields.io/github/repo-size/jordan396/JEN-stocktracker-bot.svg)](https://img.shields.io/github/repo-size/jordan396/JEN-stocktracker-bot.svg)
+[![GitHub Followers](https://img.shields.io/github/followers/jordan396.svg?label=Follow)](https://img.shields.io/github/followers/jordan396.svg?label=Follow)
+
 **DISCLAIMER**
 
 Do your Own Research. _JEN_ is intended to be used and must be used for informational purposes only. It is very important to do your own analysis before making any investment based on your own personal circumstances. You should take independent financial advice from a professional in connection with, or independently research and verify, any information that you find using _JEN_ and wish to rely upon, whether for the purpose of making an investment decision or otherwise.
