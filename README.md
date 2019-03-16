@@ -1,6 +1,6 @@
 # JEN-stocktracker-bot
 
-[![Project Status: Inactive – The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive)
+[![Project Status: Inactive – The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Project License](https://img.shields.io/github/license/jordan396/JEN-stocktracker-bot.svg)](https://img.shields.io/github/license/jordan396/JEN-stocktracker-bot.svg)
 [![Latest Commit](https://img.shields.io/github/last-commit/jordan396/JEN-stocktracker-bot/master.svg)](https://img.shields.io/github/last-commit/jordan396/JEN-stocktracker-bot/master.svg)
 [![Repo Size](https://img.shields.io/github/repo-size/jordan396/JEN-stocktracker-bot.svg)](https://img.shields.io/github/repo-size/jordan396/JEN-stocktracker-bot.svg)
