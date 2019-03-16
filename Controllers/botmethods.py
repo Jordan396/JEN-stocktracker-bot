@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 import requests
 import copy
-
+import numpy as np
+import time
 
 class botmethods:
 
@@ -12,27 +13,27 @@ class botmethods:
         self.db = dbhelper
 
     def setup_database(self):
-        db.setup_database()
+        self.db.setup_database()
 
     def checkIfUserExists(self, userID):
-        return db.select_user(userID)
+        return self.db.select_user(userID)
 
     def saveNewUser(self, userID):
-        db.insert_new_user(userID)
+        self.db.insert_new_user(userID)
 
     def getCompanyName(self, stockSymbol):
-        return db.select_company_name(stockSymbol)
+        return self.db.select_company_name(stockSymbol)
 
     def saveUserStock(self, chatID, userID, stockSymbol, stockExchange, companyName, triggerPercentage, dateAdded):
-        db.insert_user_stock(chatID, userID, stockSymbol,
-                             stockExchange, companyName, triggerPercentage, dateAdded)
+        self.db.insert_user_stock(chatID, userID, stockSymbol,
+                                  stockExchange, companyName, triggerPercentage, dateAdded)
 
     def viewUserStocks(self, userID):
         message = None
         status = 1
         list = []
         count = 1
-        for (a, b, c, d) in db.select_all_user_stocks(userID):
+        for (a, b, c, d) in self.db.select_all_user_stocks(userID):
             list.append('{}) <b>{}:{}</b>: {}'.format(count, c, b, d))
             count += 1
         message = "{}, here's the list of stocks you saved:\n\n".format(
@@ -45,7 +46,7 @@ class botmethods:
     def deleteUserStock(self, userID, userInput):
         userInput = userInput.split(':')
         try:
-            db.delete_user_stock(userID, userInput[1], userInput[0])
+            self.db.delete_user_stock(userID, userInput[1], userInput[0])
             message = "<b>{}:{}</b> has been removed.".format(
                 userInput[0], userInput[1])
             return message
@@ -55,13 +56,13 @@ class botmethods:
 
     def extractKeyStockInformation(self, stockSymbol, stockExchange, companyName):
         message = None
-        Dates, Prices = getFullPriceHistory(stockSymbol, stockExchange)
+        Dates, Prices = self.getFullPriceHistory(stockSymbol, stockExchange)
         closingPrices = copy.deepcopy(Prices)
-        highSensitivityThreshold, medSensitivityThreshold, lowSensitivityThreshold = calculateSensitivityTriggerRates(
+        highSensitivityThreshold, medSensitivityThreshold, lowSensitivityThreshold = self.calculateSensitivityTriggerRates(
             closingPrices)
         message = ("<b>{} Report</b>\n\n" +
                    "The current price of the stock is <i>${}</i>.\n\n" +
-                   "Here are the available thresholds:\n" +
+                   "Here are the available sensitivities (the greater the sensitivity, the higher the alert rate):\n" +
                    "HIGH (~6 alerts/month): <i>{}%</i>\n" +
                    "MEDIUM (~3 alerts/month): <i>{}%</i>\n" +
                    "LOW (~1 alert/month): <i>{}%</i>\n\n" +
@@ -71,35 +72,35 @@ class botmethods:
     def extractTriggeredStocks(self):
         userIDs = []
         messages = []
-        for (a, b, c, d, e, f) in db.select_all_stocks_triggered():
+        for (a, b, c, d, e, f) in self.db.select_all_stocks_triggered():
             userIDs.append(a)
             messages.append(
                 "<b>ALERT!</b>\n\nThreshold for <b>{}:{} - {}</b> has been exceeded!\n\n3/15MA threshold set: <i>{}</i>\nLatest 3/15MA calculated: <i>{}</i>".format(c, b, d, e, f))
         return (userIDs, messages)
 
     def clearChatFromApp(self, chatID):
-        db.delete_chat_from_app(chatID)
+        self.db.delete_chat_from_app(chatID)
 
     # 3
 
-    def getFullPriceHistory(stockSymbol, stockExchange):
+    def getFullPriceHistory(self, stockSymbol, stockExchange):
         response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={}:{}&outputsize=full&apikey={}".format(
             stockExchange, stockSymbol, self.ALPHA_VANTAGE_SECRET_KEY))
         data = response.json()
         timestamps, aClose = [], []
         for key in data['Time Series (Daily)']:
             timestamps.append(key)
-        dates = [datetime.datetime.strptime(
+        dates = [datetime.strptime(
             ts, "%Y-%m-%d") for ts in timestamps]
         dates.sort()
         dates.reverse()
-        Dates = [datetime.datetime.strftime(ts, "%Y-%m-%d") for ts in dates]
+        Dates = [datetime.strftime(ts, "%Y-%m-%d") for ts in dates]
         for date in Dates:
             aClose.append(
                 float(data['Time Series (Daily)'][date]['5. adjusted close']))
         return (Dates, aClose)
 
-    def getCompactPriceHistory(stockSymbol, stockExchange):
+    def getCompactPriceHistory(self, stockSymbol, stockExchange):
         response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={}:{}&apikey={}".format(
             stockExchange, stockSymbol, self.ALPHA_VANTAGE_SECRET_KEY))
         data = response.json()
@@ -107,20 +108,20 @@ class botmethods:
 
         for key in data['Time Series (Daily)']:
             timestamps.append(key)
-        dates = [datetime.datetime.strptime(
+        dates = [datetime.strptime(
             ts, "%Y-%m-%d") for ts in timestamps]
         dates.sort()
         dates.reverse()
-        Dates = [datetime.datetime.strftime(ts, "%Y-%m-%d") for ts in dates]
+        Dates = [datetime.strftime(ts, "%Y-%m-%d") for ts in dates]
         for date in Dates:
             aClose.append(
                 float(data['Time Series (Daily)'][date]['5. adjusted close']))
         return (Dates, aClose)
 
-    def calculateLatestThreeDayMA(closingPrices):
+    def calculateLatestThreeDayMA(self, closingPrices):
         return ((closingPrices[0]+closingPrices[1]+closingPrices[2])/3)
 
-    def calculateLatestFifteenDayMA(closingPrices):
+    def calculateLatestFifteenDayMA(self, closingPrices):
         fifteenDayMovingAverage = 0
         for i in range(3, 18):
             fifteenDayMovingAverage = fifteenDayMovingAverage + \
@@ -128,22 +129,23 @@ class botmethods:
         fifteenDayMovingAverage = fifteenDayMovingAverage/15
         return fifteenDayMovingAverage
 
-    def calculatePercentChange(oldValue, newValue):
+    def calculatePercentChange(self, oldValue, newValue):
         return (((newValue - oldValue)/oldValue)*100)
 
-    def createThreeFifteenPercentChangesList(closingPrices):
+    def createThreeFifteenPercentChangesList(self, closingPrices):
         percentageChangesList = []
         for i in range(len(closingPrices)-18):
-            threeDayMovingAverage = calculateLatestThreeDayMA(closingPrices)
-            fifteenDayMovingAverage = calculateLatestFifteenDayMA(
+            threeDayMovingAverage = self.calculateLatestThreeDayMA(
                 closingPrices)
-            percentageChange = calculatePercentChange(
+            fifteenDayMovingAverage = self.calculateLatestFifteenDayMA(
+                closingPrices)
+            percentageChange = self.calculatePercentChange(
                 fifteenDayMovingAverage, threeDayMovingAverage)
             percentageChangesList.append(percentageChange)
             del closingPrices[0]
         return percentageChangesList
 
-    def calculateSensitivityTriggerRates(closingPrices):
+    def calculateSensitivityTriggerRates(self, closingPrices):
         '''
         Assuming normal distribution
         High: ~6 triggers per month (6/30 -> 20%) --> z-score = -0.8416212335
@@ -154,7 +156,7 @@ class botmethods:
         threshold = (z-score * std) + mean
         '''
         latestThreeYearsClosingPrices = closingPrices[:1200]
-        percentageChangesList = createThreeFifteenPercentChangesList(
+        percentageChangesList = self.createThreeFifteenPercentChangesList(
             closingPrices)
         mean = np.mean(percentageChangesList)
         std = np.std(percentageChangesList)
@@ -165,52 +167,51 @@ class botmethods:
 
         return(highSensitivityThreshold, medSensitivityThreshold, lowSensitivityThreshold)
 
-    def calculateCurrentPercentageChange(Prices):
-        threeDayMovingAverage = calculateLatestThreeDayMA(Prices)
-        fifteenDayMovingAverage = calculateLatestFifteenDayMA(Prices)
-        percentageChange = calculatePercentChange(
+    def calculateCurrentPercentageChange(self, Prices):
+        threeDayMovingAverage = self.calculateLatestThreeDayMA(Prices)
+        fifteenDayMovingAverage = self.calculateLatestFifteenDayMA(Prices)
+        percentageChange = self.calculatePercentChange(
             fifteenDayMovingAverage, threeDayMovingAverage)
         return percentageChange
 
-    ##############################
 
-    def retrieveAllDistinctStocks():
-        return db.select_all_distinct_stocks()
+    def retrieveAllDistinctStocks(self):
+        return self.db.select_all_distinct_stocks()
 
-    def getLatestPercentageChange(stockSymbol, stockExchange, ALPHA_VANTAGE_SECRET_KEY, currentDate):
-        Dates, Prices = alphavmethods.getCompactPriceHistory(
-            stockSymbol, stockExchange, ALPHA_VANTAGE_SECRET_KEY)
+    def getLatestPercentageChange(self, stockSymbol, stockExchange, currentDate):
+        Dates, Prices = self.getCompactPriceHistory(
+            stockSymbol, stockExchange)
         if (Dates[0] == currentDate):
-            latestPercentageChange = alphavmethods.calculateCurrentPercentageChange(
+            latestPercentageChange = self.calculateCurrentPercentageChange(
                 Prices)
             return latestPercentageChange
         else:
             return None
 
-    def storeLatestPercentageChange(stockSymbol, stockExchange, currentDate, latestPercentageChange):
-        db.insert_stock_latestPercentageChange(
+    def storeLatestPercentageChange(self, stockSymbol, stockExchange, currentDate, latestPercentageChange):
+        self.db.insert_stock_latestPercentageChange(
             stockSymbol, stockExchange, currentDate, latestPercentageChange)
 
-    def checkIfPercentageChangesUpdated(currentDate):
-        updatedStocks = db.select_stocks_by_dateAdded(currentDate)
+    def checkIfPercentageChangesUpdated(self, currentDate):
+        updatedStocks = self.db.select_stocks_by_dateAdded(currentDate)
         if (len(updatedStocks) == 0):
             return False
         else:
             return True
 
-    def updatePriceOfExistingStocks():
-        currentDate = str(datetime.datetime.now().strftime("%Y-%m-%d"))
-        listOfStocks = retrieveAllDistinctStocks()
-        isPercentageChangeUpdated = checkIfPercentageChangesUpdated(
+    def updatePriceOfExistingStocks(self):
+        currentDate = str(datetime.now().strftime("%Y-%m-%d"))
+        listOfStocks = self.retrieveAllDistinctStocks()
+        isPercentageChangeUpdated = self.checkIfPercentageChangesUpdated(
             currentDate)
-
+        
         if not isPercentageChangeUpdated:
             print("PercentageChanges not updated. Commencing update now...")
             for stockSymbol, stockExchange in listOfStocks:
-                latestPercentageChange = getLatestPercentageChange(
-                    stockSymbol, stockExchange, ALPHA_VANTAGE_SECRET_KEY, currentDate)
+                latestPercentageChange = self.getLatestPercentageChange(
+                    stockSymbol, stockExchange, currentDate)
                 if latestPercentageChange is not None:
-                    storeLatestPercentageChange(
+                    self.storeLatestPercentageChange(
                         stockSymbol, stockExchange, currentDate, latestPercentageChange)
                     print("{} updated.".format(stockSymbol))
             print("Update complete.")

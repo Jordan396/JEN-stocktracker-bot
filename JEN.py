@@ -26,7 +26,6 @@ import datetime
 
 # Import local modules and scripts
 import config
-import price_updater
 from Controllers.botmethods import botmethods
 from Controllers.dbhelper import DBHelper
 
@@ -81,16 +80,16 @@ MENU, ADDTICKERSYMBOL, ADDTICKERVERIFICATION, ADDTICKERTRIGGER, ADDTICKERCONFIRM
 #================================#
 
 def start(bot, update):
-	"""Handles conversation initiation
+    """Handles conversation initiation
     Different messages are displayed depending on whether the user
-	is new. If the user is new, JEN displays an introduction message.
-	Otherwise, JEN displays a 'Welcome back' message.
-	Instructions on how to use JEN are also provided.
-	Returns:
+    is new. If the user is new, JEN displays an introduction message.
+    Otherwise, JEN displays a 'Welcome back' message.
+    Instructions on how to use JEN are also provided.
+    Returns:
         MENU state with markup_one keyboard
     """
     if update.message.chat.username is None:
-		# User has no username
+        # User has no username
         update.message.reply_text(
             "It seems you do not have a Telegram Username.\nI'll need your username in order to function :( /start me up when you have one! (You can set your username in Settings.)")
     else:
@@ -108,7 +107,7 @@ def start(bot, update):
             message = ("Hello " + update.message.chat.first_name + "!\n\nMy name's <b>JEN</b>. My purpose is to keep track of stock prices and notify you when great buying opportunities come by!\n\n" +
                        "To use me, simply look up the stocks you want to track and pick one of my suggested 3/15MA thresholds. When price changes fall below this threshold, I'll send you a notification! \n\n" +
                        "If you're wondering what's a <i>3/15MA</i>, you can find a detailed explanation on my creator's GitHub page: https://github.com/Jordan396/JEN-stocktracker-bot\n\n" +
-                       "Although I try my best, you should know that I'm only a bot after all... you should always rely on your own discretion before taking any action.\n\n" +
+                       "Although I try my best, you should know that I'm only a bot after all... you should always rely on your own discretion.\n\n" +
                        "<b>Available Commands:</b>\n" +
                        "/start : Activates JEN.\n" +
                        "/help : Displays information guide.\n" +
@@ -120,9 +119,9 @@ def start(bot, update):
 
 
 def addNewStock(bot, update):
-	"""User adds a new stock
+    """User adds a new stock
     Displays a message requesting the user to enter a stock symbol.
-	Returns:
+    Returns:
         ADDTICKERSYMBOL state with normal keyboard
     """
     if update.message.chat.username is None:
@@ -137,13 +136,13 @@ def addNewStock(bot, update):
 
 
 def addTickerOffer(bot, update, user_data):
-	"""Handles user input after requesting for ticker symbol.
+    """Handles user input after requesting for ticker symbol.
     JEN first checks if the ticker symbol added by the user is found.
-	If found, display information of company of the stock symbol.
-	Otherwise, prompt the user for a different symbol.
-	Returns:
+    If found, display information of company of the stock symbol.
+    Otherwise, prompt the user for a different symbol.
+    Returns:
         If ticker symbol is found, return ADDTICKERVERIFICATION state with markup_two keyboard.
-		Otherwise, return ADDTICKERSYMBOL state with normal keyboard.
+        Otherwise, return ADDTICKERSYMBOL state with normal keyboard.
     """
     if update.message.chat.username is None:
 		# User has no username
@@ -167,13 +166,13 @@ def addTickerOffer(bot, update, user_data):
 
 
 def addTickerVerification(bot, update, user_data):
-	"""Verify is the company displayed is indeed what the user has requested.
+    """Verify is the company displayed is indeed what the user has requested.
     If the user rejects JEN's suggested company, restart the entire interaction process.
-	Otherwise, JEN proceeds to analyze the company's stock using bots.extractKeyStockInformation().
-	Results of analysis are then displayed.
-	Returns:
+    Otherwise, JEN proceeds to analyze the company's stock using bots.extractKeyStockInformation().
+    Results of analysis are then displayed.
+    Returns:
         If user accepts, return ADDTICKERTRIGGER state with markup_three keyboard.
-		Otherwise, return MENU state with markup_one keyboard.
+        Otherwise, return MENU state with markup_one keyboard.
     """
     if update.message.chat.username is None:
 		# User has no username
@@ -204,11 +203,11 @@ def addTickerVerification(bot, update, user_data):
 
 
 def addTickerTrigger(bot, update, user_data):
-	"""Handles user input after displaying analysis thresholds.
+    """Handles user input after displaying analysis thresholds.
     Validate user's reply and save selected threshold.
-	Returns:
+    Returns:
         If reply is valid, return ADDTICKERCONFIRMATION state with markup_four keyboard.
-		Otherwise, return MENU state with markup_one keyboard.
+        Otherwise, return MENU state with markup_one keyboard.
     """
     if update.message.chat.username is None:
 		# User has no username
@@ -237,9 +236,9 @@ def addTickerTrigger(bot, update, user_data):
 
 
 def addTickerConfirmation(bot, update, user_data):
-	"""Saves the user's selected stock and threshold.
+    """Saves the user's selected stock and threshold.
     Once confirmation is received, save user's selected stock and threshold.
-	Returns:
+    Returns:
         Return MENU state with normal keyboard.
     """
     if update.message.chat.username is None:
@@ -252,7 +251,7 @@ def addTickerConfirmation(bot, update, user_data):
         if (text == "That'd be great, thanks!"):
             bots.saveUserStock(update.message.chat.id, update.message.chat.username, user_data['stockSymbol'], user_data['stockExchange'], user_data[
                                'companyName'], user_data['selectedThresholdPercentage'], str(datetime.datetime.now().strftime("%Y-%m-%d")))
-            update.message.reply_text("<b>{}:{}</b> was added successfully! I'll send you a notification whenever price changes exceed your threshold.".format(
+            update.message.reply_text("<b>{}:{}</b> was added successfully! I'll send you a notification whenever price changes exceed your sensitivity threshold.".format(
                 user_data['stockExchange'], user_data['stockSymbol']), parse_mode='HTML')
             update.message.reply_text(
                 "What would you like to do next?", reply_markup=markup_one)
@@ -266,9 +265,9 @@ def addTickerConfirmation(bot, update, user_data):
 
 
 def viewUserStocks(bot, update):
-	"""Handle user's request to view saved stocks.
+    """Handle user's request to view saved stocks.
     Message returned by bots.viewUserStocks() is shown to the user.
-	Returns:
+    Returns:
         Return MENU state with normal keyboard.
     """
     if update.message.chat.username is None:
@@ -285,12 +284,12 @@ def viewUserStocks(bot, update):
 
 
 def deleteStock(bot, update):
-	"""Handle user's request to delete a stock.
+    """Handle user's request to delete a stock.
     Calls on viewUserStocks() first to display user's saved stocks.
-	If stocks are available, ask the user to select a stock to delete.
-	Returns:
+    If stocks are available, ask the user to select a stock to delete.
+    Returns:
         If user has saved stocks, return DELETESTOCK state with normal keyboard.
-		Otherwise, return MENU state with normal keyboard.
+        Otherwise, return MENU state with normal keyboard.
     """
     if update.message.chat.username is None:
 		# User has no username
@@ -309,9 +308,9 @@ def deleteStock(bot, update):
 
 
 def deleteIdentifiedStock(bot, update):
-	"""Deletes the user's selected stock.
+    """Deletes the user's selected stock.
     If the user's selected stock is valid, proceed to delete it.
-	Returns:
+    Returns:
         Return MENU state with normal keyboard.
     """
     if update.message.chat.username is None:
@@ -333,8 +332,8 @@ def deleteIdentifiedStock(bot, update):
 #================================#
 
 def exit(bot, update, user_data):
-	"""
-	Permanently removes user from application and ends conversation.
+    """
+    Permanently removes user from application and ends conversation.
     """
     update.message.reply_text(
         "Thank you for using me! All your data has been cleared and you will no longer receive notifications.")
@@ -344,8 +343,8 @@ def exit(bot, update, user_data):
 
 
 def seeya(bot, update, user_data):
-	"""
-	Clears temporary user data and ends conversation.
+    """
+    Clears temporary user data and ends conversation.
     """
     update.message.reply_text(
         "See you next time! I'll continue to send you notifications (if triggered). /start me up again whenever~ :)")
@@ -354,8 +353,8 @@ def seeya(bot, update, user_data):
 
 
 def instructions(bot, update, user_data):
-	"""
-	Displays information on how to use JEN.
+    """
+    Displays information on how to use JEN.
     """
     update.message.reply_text("To use me, simply look up the stocks you want to track and pick one of my suggested 3/15MA thresholds. When price changes fall below this threshold, I'll send you a notification! \n\n" +
                               "If you're wondering what's a <i>3/15MA</i>, you can find a detailed explanation on my creator's GitHub page: https://github.com/Jordan396/JEN-stocktracker-bot\n\n", reply_markup=markup_one, parse_mode='HTML')
@@ -364,15 +363,15 @@ def instructions(bot, update, user_data):
 
 
 def error(bot, update, error):
-	"""
-	Logs errors.
+    """
+    Logs errors.
     """
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
 
 def unknownCommand(bot, update, user_data):
-	"""
-	Handles unrecognized commands. Redirects user to main MENU.
+    """
+    Handles unrecognized commands. Redirects user to main MENU.
     """
     if update.message.chat.username is None:
 		# User has no username
@@ -393,14 +392,14 @@ def unknownCommand(bot, update, user_data):
 #================================#
 
 def notifyUsersIfThresholdExceeded(bot, job):
-	"""Sends registered users a notification if their saved threshold was exceeded.
+    """Sends registered users a notification if their saved threshold was exceeded.
     JEN first updates prices for all stocks saved in the application.
-	For each stock with an exceeded threshold, JEN sends a notification
-	to the corresponding user.
-	Returns:
+    For each stock with an exceeded threshold, JEN sends a notification
+    to the corresponding user.
+    Returns:
         None
     """
-	bots.updatePriceOfExistingStocks()
+    bots.updatePriceOfExistingStocks()
     userIDs, messages = bots.extractTriggeredStocks()
     for i in range(len(userIDs)):
         print(userIDs[i], messages[i])
@@ -417,7 +416,7 @@ def main():
     jobQueue = updater.job_queue
     dispatcher = updater.dispatcher
     job_minute = jobQueue.run_repeating(
-        notifyUsersIfThresholdExceeded, interval=86400, first=DEPLOYMENT_DATETIME)
+        notifyUsersIfThresholdExceeded, interval=86400, first=0)
 
     conv_handler = ConversationHandler(  # Handles different commands, states.
         entry_points=[CommandHandler('start', start)],
