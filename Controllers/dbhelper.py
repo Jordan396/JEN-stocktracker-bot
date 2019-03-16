@@ -2,25 +2,26 @@ import sqlite3
 import json
 import csv
 
-## Database Class (Data Access Layer)
+# Database Class (Data Access Layer)
+
 
 class DBHelper:
     # Initiating of database
     def __init__(self, dbname="JEN.sqlite"):
         self.dbname = dbname
-        self.conn = sqlite3.connect(dbname,  check_same_thread = False)
+        self.conn = sqlite3.connect(dbname,  check_same_thread=False)
         self.c = self.conn.cursor()
 
     def create_Stocks_table(self):
         stmt = "CREATE TABLE IF NOT EXISTS Stocks (chatID text NOT NULL, userID text NOT NULL, stockSymbol text NOT NULL, stockExchange text NOT NULL, companyName text NOT NULL, triggerPercentage real NOT NULL, dateAdded text NOT NULL);"
         self.conn.execute(stmt)
         self.conn.commit()
-    
+
     def create_PercentageChanges_table(self):
         stmt = "CREATE TABLE IF NOT EXISTS PercentageChanges (stockSymbol text NOT NULL, stockExchange text NOT NULL, dateAdded text NOT NULL, latestPercentageChange real NOT NULL);"
         self.conn.execute(stmt)
         self.conn.commit()
-    
+
     def create_Users_table(self):
         stmt = "CREATE TABLE IF NOT EXISTS Users (userID text NOT NULL);"
         self.conn.execute(stmt)
@@ -48,16 +49,16 @@ class DBHelper:
 
     def insert_user_stock(self, chatID, userID, stockSymbol, stockExchange, companyName, triggerPercentage, dateAdded):
         stmt = "INSERT INTO Stocks (chatID, userID, stockSymbol, stockExchange, companyName, triggerPercentage, dateAdded) VALUES (?, ?, ?, ?, ?, ?, ?);"
-        args = (chatID, userID, stockSymbol, stockExchange, companyName, triggerPercentage, dateAdded)
+        args = (chatID, userID, stockSymbol, stockExchange,
+                companyName, triggerPercentage, dateAdded)
         self.conn.execute(stmt, args)
         self.conn.commit()
-    
+
     def insert_stock_latestPercentageChange(self, stockSymbol, stockExchange, dateAdded, latestPercentageChange):
         stmt = "INSERT INTO PercentageChanges (stockSymbol, stockExchange, dateAdded, latestPercentageChange) VALUES (?, ?, ?, ?);"
         args = (stockSymbol, stockExchange, dateAdded, latestPercentageChange)
         self.conn.execute(stmt, args)
         self.conn.commit()
-    
 
     def insert_new_user(self, userID):
         stmt = "INSERT INTO Users (userID) VALUES (?)"
@@ -91,7 +92,7 @@ class DBHelper:
         result = self.c.execute(stmt).fetchall()
         self.conn.commit()
         return result
-    
+
     def select_stocks_by_dateAdded(self, dateAdded):
         stmt = "SELECT stockSymbol FROM PercentageChanges WHERE dateAdded = (?);"
         args = (dateAdded,)
@@ -128,7 +129,8 @@ class DBHelper:
         self.create_AllStocks_table()
         print("Creating AllStocks table...")
         if (self.check_if_table_empty("AllStocks") == 0):
-            print("AllStocks table created. Inserting values from Datasets/companylist_full.csv...")
+            print(
+                "AllStocks table created. Inserting values from Datasets/companylist_full.csv...")
             self.insert_AllStocks_values()
         else:
             print("AllStocks table already exists.")
