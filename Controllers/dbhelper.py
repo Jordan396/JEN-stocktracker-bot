@@ -117,7 +117,7 @@ class DBHelper:
         self.conn.execute(stmt, args)
         self.conn.commit()
 
-    def setup(self):
+    def setup_database(self):
         print("Creating Stocks table...")
         self.create_Stocks_table()
         print("Creating Users table...")

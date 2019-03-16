@@ -45,9 +45,8 @@ ALPHA_VANTAGE_SECRET_KEY = config.ALPHA_VANTAGE_SECRET_KEY
 DEPLOYMENT_DATETIME = datetime.datetime.strptime(
     config.DEPLOYMENT_DATETIME, '%m/%d/%y %H:%M:%S')
 
-# Instantiate controller classes
-bots = botmethods(ALPHA_VANTAGE_SECRET_KEY)
-db = DBHelper()
+# Instantiate controller class
+bots = botmethods(ALPHA_VANTAGE_SECRET_KEY, DBHelper())
 
 # Start logging
 logging.basicConfig(level=logging.DEBUG,
@@ -401,7 +400,7 @@ def notifyUsersIfThresholdExceeded(bot, job):
 	Returns:
         None
     """
-	price_updater.main()
+	bots.updatePriceOfExistingStocks()
     userIDs, messages = bots.extractTriggeredStocks()
     for i in range(len(userIDs)):
         print(userIDs[i], messages[i])
@@ -413,7 +412,7 @@ def notifyUsersIfThresholdExceeded(bot, job):
 #================================#
 
 def main():
-    db.setup()
+    bots.setup_database()
     updater = Updater(token=TOKEN)
     jobQueue = updater.job_queue
     dispatcher = updater.dispatcher

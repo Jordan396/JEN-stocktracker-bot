@@ -40,6 +40,7 @@ Currently, _JEN_ only supports stocks traded on the _NYSE_ and _NASDAQ_ as of _1
 _JEN's_ inner workings can be broken down into two main segments - the **Telegram bot** and a supplementary **cronjob**.
 
 The Telegram bot segment can be further divided into four layers:
+MVC
 * **Bot framework layer** (_JEN.py_). This bot relies on the [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) framework.
 * **Bot support layer** (_Controllers/botmethods.py_). Acts as an intermediary layer between the framework layer and the other layers, which supports the [Interface Segregation Principle](https://en.wikipedia.org/wiki/Interface_segregation_principle).
 * **Database access layer** (_Controllers/dbhelper.py_). Handles interactions with the _SQLITE_ database.
