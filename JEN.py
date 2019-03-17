@@ -45,8 +45,6 @@ __status__ = "Production"
 # Assign config variables
 TOKEN = config.TELEGRAM_BOT_SECRET_KEY
 ALPHA_VANTAGE_SECRET_KEY = config.ALPHA_VANTAGE_SECRET_KEY
-DEPLOYMENT_DATETIME = datetime.datetime.strptime(
-    config.DEPLOYMENT_DATETIME, '%m/%d/%y %H:%M:%S')
 
 # Instantiate controller class
 bots = botmethods(ALPHA_VANTAGE_SECRET_KEY, DBHelper())
@@ -253,11 +251,11 @@ def addTickerConfirmation(bot, update, user_data):
         Return MENU state with normal keyboard.
     """
     if update.message.chat.username is None:
-                # User has no username
+        # User has no username
         update.message.reply_text(
             "It seems you do not have a Telegram Username.\nI'll need your username in order to function :( /start me up when you have one! (You can set your username in Settings.)")
     else:
-                # User has username
+        # User has username
         text = update.message.text
         if (text == "That'd be great, thanks!"):
             bots.saveUserStock(update.message.chat.id, update.message.chat.username, user_data['stockSymbol'], user_data['stockExchange'], user_data[
@@ -423,7 +421,7 @@ def notifyUsersIfThresholdExceeded(bot, job):
 
 def main():
     """Main function to be executed.
-    
+
     If database does not exist, JEN proceeds to set it up.
     A job to update existing stock prices is added to the jobQueue
     once every 24 hours. During which, JEN checks if users' threshold

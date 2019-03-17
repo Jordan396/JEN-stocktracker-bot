@@ -247,7 +247,7 @@ class botmethods:
         return fifteenDayMovingAverage
 
     def calculatePercentChange(self, oldValue, newValue):
-         """Calculates percentage change from oldValue to newValue.
+        """Calculates percentage change from oldValue to newValue.
 
         Args:
             oldValue: oldValue
