@@ -1,12 +1,28 @@
+# -*- coding: utf-8 -*-
+"""Model/Database layer for JEN.py.
+
+This script defines the class `DBHelper`. The DBHelper
+class interacts directly with the SQLITE database. 
+By creating a separate object, we avoid mixing the
+control and model layer in the MVC design pattern.
+
+This script is not to be executed on it's own!
+"""
+
+# Import common modules
 import sqlite3
 import json
 import csv
 
-# Database Class (Data Access Layer)
-
 
 class DBHelper:
-    # Initiating of database
+    """The Model/Database layer for JEN.
+
+    Please ensure that your ALPHA_VANTAGE_SECRET_KEY has
+    been configured correctly.
+    Attributes:
+        dbname (str): The name of the database.
+    """
     def __init__(self, dbname="JEN.sqlite"):
         self.dbname = dbname
         self.conn = sqlite3.connect(dbname,  check_same_thread=False)
