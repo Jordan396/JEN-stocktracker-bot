@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Script to run JEN telegram bot.
-This script starts the telegram bot.
+This script starts the telegram bot, which continually polls for messages. 
+If this is the first time running the script, a SQLITE database will be
+created. This may take some time. JEN checks for updates in prices every 
+24 hours, commencing from when the script is deployed.
 Example:
     To run the script:
         $ python JEN.py
@@ -80,7 +83,7 @@ MENU, ADDTICKERSYMBOL, ADDTICKERVERIFICATION, ADDTICKERTRIGGER, ADDTICKERCONFIRM
 #================================#
 
 def start(bot, update):
-    """Handles conversation initiation
+    """Handles conversation initiation.
     Different messages are displayed depending on whether the user
     is new. If the user is new, JEN displays an introduction message.
     Otherwise, JEN displays a 'Welcome back' message.
@@ -93,7 +96,7 @@ def start(bot, update):
         update.message.reply_text(
             "It seems you do not have a Telegram Username.\nI'll need your username in order to function :( /start me up when you have one! (You can set your username in Settings.)")
     else:
-		# User has username
+                # User has username
         userExists = bots.checkIfUserExists(update.message.chat.username)
         if userExists:
             update.message.reply_text("Welcome back " + update.message.chat.first_name + "!\n\n" +
@@ -113,23 +116,24 @@ def start(bot, update):
                        "/help : Displays information guide.\n" +
                        "/seeya : Stops JEN temporarily. You will still receive notifications (if triggered).\n" +
                        "/exit : Stops JEN permanently. You will no longer receive notifications.")
-            update.message.reply_text(message, reply_markup=markup_one, parse_mode='HTML')
+            update.message.reply_text(
+                message, reply_markup=markup_one, parse_mode='HTML')
             bots.saveNewUser(update.message.chat.username)
             return MENU
 
 
 def addNewStock(bot, update):
-    """User adds a new stock
+    """User adds a new stock.
     Displays a message requesting the user to enter a stock symbol.
     Returns:
         ADDTICKERSYMBOL state with normal keyboard
     """
     if update.message.chat.username is None:
-		# User has no username
+                # User has no username
         update.message.reply_text(
             "It seems you do not have a Telegram Username.\nI'll need your username in order to function :( /start me up when you have one! (You can set your username in Settings.)")
     else:
-		# User has username
+                # User has username
         update.message.reply_text(
             "Enter the ticker symbol of the stock you'd like to add:")
         return ADDTICKERSYMBOL
@@ -145,11 +149,11 @@ def addTickerOffer(bot, update, user_data):
         Otherwise, return ADDTICKERSYMBOL state with normal keyboard.
     """
     if update.message.chat.username is None:
-		# User has no username
+                # User has no username
         update.message.reply_text(
             "It seems you do not have a Telegram Username.\nI'll need your username in order to function :( /start me up when you have one! (You can set your username in Settings.)")
     else:
-		# User has username
+                # User has username
         text = update.message.text
         result = bots.getCompanyName(text.upper())
         if result is None:
@@ -175,11 +179,11 @@ def addTickerVerification(bot, update, user_data):
         Otherwise, return MENU state with markup_one keyboard.
     """
     if update.message.chat.username is None:
-		# User has no username
+                # User has no username
         update.message.reply_text(
             "It seems you do not have a Telegram Username.\nI'll need your username in order to function :( /start me up when you have one! (You can set your username in Settings.)")
     else:
-		# User has username
+                # User has username
         text = update.message.text
         if (text == "Yes, that's the one!"):
             update.message.reply_text(
@@ -210,11 +214,11 @@ def addTickerTrigger(bot, update, user_data):
         Otherwise, return MENU state with markup_one keyboard.
     """
     if update.message.chat.username is None:
-		# User has no username
+                # User has no username
         update.message.reply_text(
             "It seems you do not have a Telegram Username.\nI'll need your username in order to function :( /start me up when you have one! (You can set your username in Settings.)")
     else:
-		# User has username
+                # User has username
         text = update.message.text
         if (text == "HIGH" or text == "MEDIUM" or text == "LOW"):
             update.message.reply_text(
@@ -242,11 +246,11 @@ def addTickerConfirmation(bot, update, user_data):
         Return MENU state with normal keyboard.
     """
     if update.message.chat.username is None:
-		# User has no username
+                # User has no username
         update.message.reply_text(
             "It seems you do not have a Telegram Username.\nI'll need your username in order to function :( /start me up when you have one! (You can set your username in Settings.)")
     else:
-		# User has username
+                # User has username
         text = update.message.text
         if (text == "That'd be great, thanks!"):
             bots.saveUserStock(update.message.chat.id, update.message.chat.username, user_data['stockSymbol'], user_data['stockExchange'], user_data[
@@ -271,11 +275,11 @@ def viewUserStocks(bot, update):
         Return MENU state with normal keyboard.
     """
     if update.message.chat.username is None:
-		# User has no username
+                # User has no username
         update.message.reply_text(
             "It seems you do not have a Telegram Username.\nI'll need your username in order to function :( /start me up when you have one! (You can set your username in Settings.)")
     else:
-		# User has username
+                # User has username
         message, status = bots.viewUserStocks(update.message.chat.username)
         update.message.reply_text(message, parse_mode='HTML')
         update.message.reply_text(
@@ -292,11 +296,11 @@ def deleteStock(bot, update):
         Otherwise, return MENU state with normal keyboard.
     """
     if update.message.chat.username is None:
-		# User has no username
+                # User has no username
         update.message.reply_text(
             "It seems you do not have a Telegram Username.\nI'll need your username in order to function :( /start me up when you have one! (You can set your username in Settings.)")
     else:
-		# User has username
+                # User has username
         message, status = bots.viewUserStocks(update.message.chat.username)
         update.message.reply_text(message, parse_mode='HTML')
         if (status == 1):
@@ -314,11 +318,11 @@ def deleteIdentifiedStock(bot, update):
         Return MENU state with normal keyboard.
     """
     if update.message.chat.username is None:
-		# User has no username
+                # User has no username
         update.message.reply_text(
             "It seems you do not have a Telegram Username.\nI'll need your username in order to function :( /start me up when you have one! (You can set your username in Settings.)")
     else:
-		# User has username
+                # User has username
         text = update.message.text
         message = bots.deleteUserStock(update.message.chat.username, text)
         update.message.reply_text(message, parse_mode='HTML')
@@ -374,11 +378,11 @@ def unknownCommand(bot, update, user_data):
     Handles unrecognized commands. Redirects user to main MENU.
     """
     if update.message.chat.username is None:
-		# User has no username
+                # User has no username
         update.message.reply_text(
             "It seems you do not have a Telegram Username.\nI'll need your username in order to function :( /start me up when you have one! (You can set your username in Settings.)")
     else:
-		# User has username
+                # User has username
         update.message.reply_text(
             "I'm sorry, I couldn't understand what you were trying to say :(")
         update.message.reply_text(
@@ -403,7 +407,8 @@ def notifyUsersIfThresholdExceeded(bot, job):
     userIDs, messages = bots.extractTriggeredStocks()
     for i in range(len(userIDs)):
         print(userIDs[i], messages[i])
-        bot.send_message(chat_id=userIDs[i], text=messages[i], parse_mode='HTML')
+        bot.send_message(chat_id=userIDs[i],
+                         text=messages[i], parse_mode='HTML')
 
 
 #================================#
@@ -411,16 +416,25 @@ def notifyUsersIfThresholdExceeded(bot, job):
 #================================#
 
 def main():
+    """Main function to be executed.
+    If database does not exist, JEN proceeds to set it up.
+    A job to update existing stock prices is added to the jobQueue
+    once every 24 hours. During which, JEN checks if users' threshold
+    has been exceeded and proceeds to send a notification accordingly.
+    The polling process runs continuously.
+    """
     bots.setup_database()
     updater = Updater(token=TOKEN)
     jobQueue = updater.job_queue
     dispatcher = updater.dispatcher
+
+    # Set price updater and notifier to execute every 24 hours
     job_minute = jobQueue.run_repeating(
         notifyUsersIfThresholdExceeded, interval=86400, first=0)
 
+    # Set the conversation handler
     conv_handler = ConversationHandler(  # Handles different commands, states.
         entry_points=[CommandHandler('start', start)],
-
         states={
             MENU: [RegexHandler('^(' + emoji.emojize(':heavy_plus_sign: Add a stock :heavy_plus_sign:', use_aliases=True)+')$', addNewStock),
                    RegexHandler(
@@ -434,7 +448,6 @@ def main():
             ADDTICKERCONFIRMATION: [MessageHandler(Filters.text, addTickerConfirmation, pass_user_data=True)],
             DELETESTOCK: [MessageHandler(Filters.text, deleteIdentifiedStock)]
         },
-
         fallbacks=[CommandHandler('exit', exit, pass_user_data=True),
                    CommandHandler('help', instructions, pass_user_data=True),
                    CommandHandler('seeya', seeya, pass_user_data=True),
@@ -448,6 +461,7 @@ def main():
     updater.idle()
 
 
+# Execute the main function
 if __name__ == '__main__':
     tmain()
     main()
